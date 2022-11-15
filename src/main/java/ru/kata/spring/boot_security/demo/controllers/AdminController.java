@@ -1,26 +1,42 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.hibernate.Hibernate;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
+import ru.kata.spring.boot_security.demo.util.UserValidator;
 
-import java.security.Principal;
+import javax.validation.Valid;
 
 
 @Controller
 @RequestMapping("/admin")
-public class UserController {
+public class AdminController {
     private final UserService userService;
+    private final UserValidator userValidator;
 
-    public UserController(UserService userService) {
+    public AdminController(UserService userService, UserValidator userValidator) {
         this.userService = userService;
+        this.userValidator = userValidator;
     }
+
+
 
     @GetMapping("/hello")
     public String sayHello() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User user = (User) authentication.getPrincipal();
+//        Hibernate.initialize(user.getUser());
+        System.out.println(user.getUser());
         return "hello";
     }
 
@@ -44,9 +60,12 @@ public class UserController {
         return "addUser";
     }
 
-    @PostMapping("/update/get")
-    public String create(@ModelAttribute("user") User user) {
-//        user.setId(2);
+    @PostMapping("/get")
+    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+        userValidator.validate(user, bindingResult);
+        if (bindingResult.hasErrors()){
+            return "addUser";
+        }
         userService.createUser(user);
         return "redirect:/admin/get";
     }

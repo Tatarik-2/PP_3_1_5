@@ -1,9 +1,13 @@
-package com.example.pp_3_1_2.DAO;
+package ru.kata.spring.boot_security.demo.DAO;
 
 
-import com.example.pp_3_1_2.model.User;
-import org.springframework.beans.factory.annotation.Autowired;
+
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.model.User;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import java.util.List;
@@ -17,15 +21,18 @@ public class UserDAOImpl implements UserDAO {
 
     @PersistenceContext
     private EntityManager entityManager;
+    private final PasswordEncoder passwordEncoder;
 
-//    @Autowired
-    public UserDAOImpl(EntityManager entityManager) {
+    public UserDAOImpl(EntityManager entityManager, @Lazy PasswordEncoder passwordEncoder) {
         this.entityManager = entityManager;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
-//    @Transactional
+    @Transactional
     public void saveUser(User user) {
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
         entityManager.persist(user);
     }
 

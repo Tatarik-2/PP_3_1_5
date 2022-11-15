@@ -1,7 +1,9 @@
-package com.example.pp_3_1_2.service;
+package ru.kata.spring.boot_security.demo.service;
 
 
-import com.example.pp_3_1_2.model.User;
+
+
+import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
 
@@ -16,4 +18,6 @@ public interface UserService {
     void update(int id, User updatedUser);
 //
     void delete(int id);
+
+
 }
