@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 @Entity
@@ -30,7 +31,7 @@ public class User implements UserDetails {
     private String password;
 
 //    @ManyToMany(cascade = CascadeType.ALL)
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY/*, cascade = CascadeType.ALL*/)
     @JoinTable(name = "user_roles"
     , joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     , inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
@@ -160,5 +161,16 @@ public class User implements UserDetails {
                 '}';
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        User user = (User) o;
+        return age == user.age && Objects.equals(id, user.id) && Objects.equals(name, user.name) && Objects.equals(email, user.email) && Objects.equals(username, user.username) && Objects.equals(password, user.password) && Objects.equals(roles, user.roles);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, email, age, username, password, roles);
+    }
 }

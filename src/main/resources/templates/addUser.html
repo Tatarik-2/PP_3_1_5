@@ -10,7 +10,7 @@
 <body>
 
 <form th:method="POST" th:action="@{/admin/get}" th:object="${user}">
-    <label for="username">Введите Login</label>
+    <label for="username">Введите Username</label>
     <input type="text" th:field="*{username}" id="username"/>
     <div style="color: red" th:if="${#fields.hasErrors('username')}" th:errors="*{username}">Error</div>
     <br/>
@@ -29,6 +29,8 @@
     <br/>
     <label for="age">Введите возраст</label>
     <input type="number" th:field="*{age}" id="age"/>
+    <br/>
+    <br/>
     <br/>
     <br/>
     <input type="submit" class="btn btn-outline-secondary" value="Добавить"/>

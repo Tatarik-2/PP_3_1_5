@@ -12,6 +12,8 @@
 <table class="table table-striped table-hover">
     <thead>
     <tr>
+        <th scope="col">Username</th>
+<!--        <th scope="col">Пароль</th>-->
         <th scope="col">Id</th>
         <th scope="col">Имя</th>
         <th scope="col">Почта</th>
@@ -23,6 +25,8 @@
     </thead>
     <tbody>
     <tr th:each="user : ${allUsers}">
+        <td th:text="${user.getUsername()}"></td>
+<!--        <td th:text="${user.getPassword()}"></td>-->
         <td th:text="${user.getId()}"></td>
         <td th:text="${user.getName()}"></td>
         <td th:text="${user.getEmail()}"></td>

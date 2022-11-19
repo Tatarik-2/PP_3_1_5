@@ -41,21 +41,31 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/auth/login", "/error").permitAll()//по этим адресам могут переходить все
-                .antMatchers("/user").hasRole("USER")
-                .antMatchers("/admin/**").hasRole("ADMIN")
+//                .antMatchers("/auth/login", "/error").permitAll()//по этим адресам могут переходить все
+                .antMatchers("/user/**").hasRole("USER")
+                .antMatchers("/admin/**").hasRole("ADMIN")//пока убрал, добавь потом
                 .antMatchers("/", "/index").permitAll()
 //                .anyRequest().authenticated()//по остальным же - только аутентифированные
                 .and()
-                .formLogin()
-                .loginPage("/admin/get")
-                .loginProcessingUrl("/process_login")
-                .defaultSuccessUrl("/admin/hello", true)
-                .failureUrl("/auth/login?error")
+                .formLogin().successHandler(successUserHandler)
+//                .failureUrl("/index")
+//                .permitAll()
                 .and()
                 .logout()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/login");
+                .logoutSuccessUrl("/login")
+                .permitAll();
+
+                //Nail
+//                .formLogin()
+//                .loginPage("/admin/get")
+//                .loginProcessingUrl("/process_login")
+//                .defaultSuccessUrl("/admin/hello", true)
+//                .failureUrl("/auth/login?error")
+//                .and()
+//                .logout()
+//                .logoutUrl("/logout")
+//                .logoutSuccessUrl("/login");
 
 //        http
 ////                .csrf().disable()
@@ -103,13 +113,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //    }
 
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-//        auth.authenticationProvider(authProvider);
-        auth.userDetailsService(userService)
-                .passwordEncoder(bCryptPasswordEncoder())
-        ;
-    }
+//    @Override
+//    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+////        auth.authenticationProvider(authProvider);
+//        auth.userDetailsService(userService)
+//                .passwordEncoder(bCryptPasswordEncoder())
+//        ;
+//    }
 
     @Bean
     public PasswordEncoder bCryptPasswordEncoder() {
@@ -117,11 +127,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //        return NoOpPasswordEncoder.getInstance();
     }
 
-//    @Bean
-//    public DaoAuthenticationProvider daoAuthenticationProvider() {
-//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-//        daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
-//        daoAuthenticationProvider.setUserDetailsService(userService);
-//        return daoAuthenticationProvider;
-//    }
+    @Bean
+    public DaoAuthenticationProvider daoAuthenticationProvider() {
+        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
+        daoAuthenticationProvider.setPasswordEncoder(bCryptPasswordEncoder());
+        daoAuthenticationProvider.setUserDetailsService(userService);
+        return daoAuthenticationProvider;
+    }
 }

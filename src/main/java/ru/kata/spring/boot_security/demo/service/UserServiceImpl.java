@@ -75,29 +75,30 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-//        User user = findByUsername(username);
-//        if (user==null){
-//            throw new UsernameNotFoundException(String.format("Пользователя с именем %s не существует", username));
-//        }
-//         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword()
-//         , mapRolesToAuthorities(user.getRoles()));
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isEmpty()){
+        User user = findByUsername(username);
+        if (user == null) {
             throw new UsernameNotFoundException(String.format("Пользователя с именем %s не существует", username));
         }
-        return user.get();
+        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword()
+                , mapRolesToAuthorities(user.getRoles()));
+//        Optional<User> user = userRepository.findByUsername(username);
+//        if (user.isEmpty()){
+//            throw new UsernameNotFoundException(String.format("Пользователя с именем %s не существует", username));
+//        }
+//        return user.get();
     }
 
 
-    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles){
-        return roles.stream().map(r->new SimpleGrantedAuthority(r.getRole())).collect(Collectors.toList());
+    private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
+        return roles.stream().map(r -> new SimpleGrantedAuthority(r.getRole())).collect(Collectors.toList());
     }
 
-//    public User findByUsername(String username){
-//        return userRepository.findByUsername(username);
-//    }
-
-    public Optional<User> findByUsername(String username){
+    @Override
+    public User findByUsername(String username) {
         return userRepository.findByUsername(username);
     }
+
+//    public Optional<User> findByUsername(String username){
+//        return userRepository.findByUsername(username);
+//    }
 }
