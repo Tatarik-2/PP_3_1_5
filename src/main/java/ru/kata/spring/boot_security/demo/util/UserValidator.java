@@ -6,6 +6,7 @@ import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
+
 @Component
 public class UserValidator implements Validator {
     private final UserServiceImpl userService;
@@ -22,13 +23,16 @@ public class UserValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         User user = (User) target;
+
         try {
             userService.loadUserByUsername(user.getUsername());
-            System.out.println("userService.loadUserByUsername(user.getUsername()); " + user.getUsername());
-        } catch (UsernameNotFoundException ignored){
+        }
 
+        catch (UsernameNotFoundException ignored) {
             return;//значит такого пользователя нет, все норм
         }
         errors.rejectValue("username", "!!!", "Человек с таким ником уже существует");
+
+
     }
 }

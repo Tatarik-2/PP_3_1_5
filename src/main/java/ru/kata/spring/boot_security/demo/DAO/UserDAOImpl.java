@@ -42,6 +42,9 @@ public class UserDAOImpl implements UserDAO {
         userForUpdate.setName(user.getName());
         userForUpdate.setEmail(user.getEmail());
         userForUpdate.setAge(user.getAge());
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        userForUpdate.setPassword(encodedPassword);
+
     }
 
     @Override

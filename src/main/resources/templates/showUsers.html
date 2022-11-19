@@ -13,7 +13,7 @@
     <thead>
     <tr>
         <th scope="col">Username</th>
-<!--        <th scope="col">Пароль</th>-->
+        <!--        <th scope="col">Пароль</th>-->
         <th scope="col">Id</th>
         <th scope="col">Имя</th>
         <th scope="col">Почта</th>
@@ -26,7 +26,7 @@
     <tbody>
     <tr th:each="user : ${allUsers}">
         <td th:text="${user.getUsername()}"></td>
-<!--        <td th:text="${user.getPassword()}"></td>-->
+        <!--        <td th:text="${user.getPassword()}"></td>-->
         <td th:text="${user.getId()}"></td>
         <td th:text="${user.getName()}"></td>
         <td th:text="${user.getEmail()}"></td>
@@ -54,6 +54,20 @@
 </table>
 <br>
 
-<input type="button" class="btn btn-outline-primary" value="Добавить пользователя" onclick="window.location.href = 'add_user'"/>
+<input type="button" class="btn btn-outline-primary" value="Добавить пользователя"
+       onclick="window.location.href = 'add_user'"/>
+<br>
+<br>
+<!--<input type="button" class="btn btn-outline-primary" value="Хто я сам?" onclick="window.location.href = 'user/info'"/>-->
+<form th:action="@{/user/info}" method="GET">
+    <input type="submit" class="btn btn-info" value="Хто я сам?"/>
+</form>
+
+<br>
+<!--<input type="button" class="btn btn-outline-primary" value="Выход" onclick="window.location.href = 'logout'"/>-->
+<form th:action="@{/logout}" method="GET">
+    <input type="submit" class="btn btn-info" value="Выход"/>
+</form>
+<br>
 </body>
 </html>

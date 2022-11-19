@@ -42,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .authorizeRequests()
 //                .antMatchers("/auth/login", "/error").permitAll()//по этим адресам могут переходить все
-                .antMatchers("/user/**").hasRole("USER")
+                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN")
                 .antMatchers("/admin/**").hasRole("ADMIN")//пока убрал, добавь потом
                 .antMatchers("/", "/index").permitAll()
 //                .anyRequest().authenticated()//по остальным же - только аутентифированные
