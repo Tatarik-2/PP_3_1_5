@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.kata.spring.boot_security.demo.DAO.RoleDAO;
 import ru.kata.spring.boot_security.demo.DAO.UserDAO;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
@@ -25,11 +26,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserDAO userDAO;
     private UserRepository userRepository;
+    private RoleDAO roleDAO;
 
-    public UserServiceImpl(UserDAO userDAO, UserRepository userRepository
+    public UserServiceImpl(UserDAO userDAO, UserRepository userRepository, RoleDAO roleDAO
     ) {
         this.userDAO = userDAO;
         this.userRepository = userRepository;
+        this.roleDAO = roleDAO;
     }
 
 //    //    @Autowired
@@ -105,4 +108,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     //    public Optional<User> findByUsername(String username){
 //        return userRepository.findByUsername(username);
 //    }
+
+
+    @Override
+    public List<Role> listRoles() {
+        return roleDAO.listRoles();
+    }
+
+    @Override
+    public List<Role> listByRole(List<String> name) {
+        return roleDAO.listByName(name);
+    }
 }

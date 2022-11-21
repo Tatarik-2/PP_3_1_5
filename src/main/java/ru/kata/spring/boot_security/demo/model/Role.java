@@ -60,8 +60,7 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String toString() {
-        return "Role{" +
-                "role='" + role.replace("ROLE_", "") + '\'' +
-                '}';
+        return "Роль - " +
+                 role.replace("ROLE_", "");
     }
 }

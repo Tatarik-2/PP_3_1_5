@@ -6,15 +6,15 @@
 </head>
 <body>
 
-<h1>Я - это:</h1>
+<h1>Вы - это:</h1>
 <br>
 <div>
     <th:block>
         <h1 th:text="'User name - ' + ${user.getUsername()}"></h1>
         <h1 th:text="'Email - ' + ${user.getEmail()}"></h1>
         <th:block
-                th:each="msg : ${user.getRoles()}">
-            <h1 th:text="${msg}"></h1>
+                th:each="role : ${user.getRoles()}">
+            <h1 th:text="${role}"></h1>
         </th:block>
     </th:block>
 </div>

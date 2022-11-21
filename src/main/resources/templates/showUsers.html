@@ -18,6 +18,7 @@
         <th scope="col">Имя</th>
         <th scope="col">Почта</th>
         <th scope="col">Возраст</th>
+        <th scope="col">Роли</th>
         <th scope="col">Изменить</th>
         <th scope="col">Удалить</th>
         <th scope="col">Полная информация</th>
@@ -32,20 +33,28 @@
         <td th:text="${user.getEmail()}"></td>
         <td th:text="${user.getAge()}"></td>
         <td>
-            <form th:action="@{/admin/update/{id}(id=${user.getId()})}">
-                <button class="btn btn-info">Поменять данные</button>
-            </form>
+            <!--                    <ul>-->
+            <th:block th:each="msg : ${user.getRoles()}">
+                <li th:text="${msg}"></li>
+            </th:block>
+            <!--                    </ul>-->
         </td>
-        <td>
-            <form th:method="DELETE" th:action="@{/admin/delete/{id}(id=${user.getId()})}">
-                <input type="submit" class="btn btn-danger" value="Удалить пользователя"/>
-            </form>
-        </td>
-        <td>
-            <form th:method="GET" th:action="@{/admin/{id}(id=${user.getId()})}">
-                <input type="submit" class="btn btn-danger" value="Получить данные"/>
-            </form>
-        </td>
+
+    <td>
+        <form th:action="@{/admin/update/{id}(id=${user.getId()})}">
+            <button class="btn btn-info">Поменять данные</button>
+        </form>
+    </td>
+    <td>
+        <form th:method="DELETE" th:action="@{/admin/delete/{id}(id=${user.getId()})}">
+            <input type="submit" class="btn btn-danger" value="Удалить пользователя"/>
+        </form>
+    </td>
+    <td>
+        <form th:method="GET" th:action="@{/admin/{id}(id=${user.getId()})}">
+            <input type="submit" class="btn btn-danger" value="Получить данные"/>
+        </form>
+    </td>
 
     </tr>
 

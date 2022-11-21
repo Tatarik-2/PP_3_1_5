@@ -10,12 +10,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import javax.validation.Valid;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @Controller
@@ -28,7 +32,6 @@ public class AdminController {
         this.userService = userService;
         this.userValidator = userValidator;
     }
-
 
 
     @GetMapping("/hello")
@@ -55,16 +58,24 @@ public class AdminController {
     }
 
     @GetMapping("/add_user")
-    public String addUser(@ModelAttribute("user") User user) {
-//        model.addAttribute("user", new User());
+    public String addUser(@ModelAttribute("user") User user, Model model) {
+        model.addAttribute("roleList", userService.listRoles());
         return "addUser";
     }
 
     @PostMapping("/get")
-    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult) {
+    public String create(@ModelAttribute("user") @Valid User user, BindingResult bindingResult
+            , Model model
+    ) {
         userValidator.validate(user, bindingResult);
-        if (bindingResult.hasErrors()){
+        List<String> lsr = user.getRoles().stream().map(r -> r.getRole()).collect(Collectors.toList());
+        List<Role> liRo = userService.listByRole(lsr);
+        user.setRoles(liRo);
+
+        if (bindingResult.hasErrors()) {
+            model.addAttribute("roleList", userService.listRoles());
             return "addUser";
+//            return "redirect:/admin/add_user";
         }
         userService.createUser(user);
         return "redirect:/admin/get";
@@ -79,11 +90,16 @@ public class AdminController {
     @GetMapping("/update/{id}")
     public String update(@PathVariable("id") int id, Model model) {
         model.addAttribute(userService.get(id));
+        model.addAttribute("roleList", userService.listRoles());
         return "updateUser";
     }
 
     @PostMapping("/update/{id}")
-    public String update_2(@PathVariable("id") int id, User user) {
+    public String update_2(@PathVariable("id") int id, /*User user*/
+                           @ModelAttribute("user") @Valid User user) {
+        List<String> lsr = user.getRoles().stream().map(r -> r.getRole()).collect(Collectors.toList());
+        List<Role> liRo = userService.listByRole(lsr);
+        user.setRoles(liRo);
         userService.update(id, user);
         return "redirect:/admin/get";
     }
