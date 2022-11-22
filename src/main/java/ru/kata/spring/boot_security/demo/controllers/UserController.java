@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
+import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 import ru.kata.spring.boot_security.demo.util.UserValidator;
 
 import java.security.Principal;
@@ -17,10 +18,11 @@ import java.security.Principal;
 @RequestMapping("/user")
 public class UserController {
 
-    private final UserService userService;
+//    private final UserService userService;
+    private final UserServiceImpl userService;
     private final UserValidator userValidator;
 
-    public UserController(UserService userService, UserValidator userValidator) {
+    public UserController(/*UserService userService*/UserServiceImpl userService, UserValidator userValidator) {
         this.userService = userService;
         this.userValidator = userValidator;
     }
@@ -32,10 +34,12 @@ public class UserController {
 
     @GetMapping("/info")
     public String showInfo(Model model, Principal principal) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User user = (User) authentication.getPrincipal();
-//        model.addAttribute("user", user.getUser());
-        User user = userService.findByUsername(principal.getName());
+////        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+////        User user = (User) authentication.getPrincipal();
+////        model.addAttribute("user", user.getUser());
+//        User user = userService.findByUsername(principal.getName());
+
+        User user = (User) userService.loadUserByUsername(principal.getName());
         System.out.println(user);
         model.addAttribute("user", user);
         return "infoAboutMe";

@@ -82,13 +82,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if (user == null) {
             throw new UsernameNotFoundException(String.format("Пользователя с именем %s не существует", username));
         }
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword()
-                , mapRolesToAuthorities(user.getRoles()));
+//        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword()
+//                , mapRolesToAuthorities(user.getRoles()));
 //        Optional<User> user = userRepository.findByUsername(username);
 //        if (user.isEmpty()){
 //            throw new UsernameNotFoundException(String.format("Пользователя с именем %s не существует", username));
 //        }
 //        return user.get();
+        return user;
     }
 
 
