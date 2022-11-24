@@ -14,7 +14,7 @@ public class Role implements GrantedAuthority {
     @Column
     private String role;
 
-//    @ManyToMany(cascade = CascadeType.ALL)
+    //    @ManyToMany(cascade = CascadeType.ALL)
 //    @JoinTable(name = "user_roles"
 //            , joinColumns = @JoinColumn(name = "role_id")
 //            , inverseJoinColumns = @JoinColumn(name = "user_id"))
@@ -60,7 +60,6 @@ public class Role implements GrantedAuthority {
 
     @Override
     public String toString() {
-        return "Роль - " +
-                 role.replace("ROLE_", "");
+        return role.replace("ROLE_", "");
     }
 }
