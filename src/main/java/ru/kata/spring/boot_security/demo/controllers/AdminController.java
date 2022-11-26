@@ -1,7 +1,5 @@
 package ru.kata.spring.boot_security.demo.controllers;
 
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -30,7 +28,7 @@ public class AdminController {
 
     @GetMapping(value = "/get")
     public String getAllUsers(Model model, Principal principal, @ModelAttribute ("user") User user) {
-        User user1 = userService.findByUsername(principal.getName());
+        User user1 = userService.findUserByUsername(principal.getName());
         model.addAttribute("user", user1);
         model.addAttribute("usersList", userService.getAllUsers());
         model.addAttribute("rolesList", userService.listRoles());
@@ -39,9 +37,9 @@ public class AdminController {
     }
 
     @PostMapping("/update/{id}")
-    public String update_2(@PathVariable("id") int id, User user
-                           /*@ModelAttribute("user") @Valid User user*/) {
-        List<String> lsr = user.getRoles().stream().map(r -> r.getRole()).collect(Collectors.toList());
+    public String update_2(@PathVariable("id") int id, /*User user*/
+                           @ModelAttribute("user") @Valid User user) {
+        List<String> lsr = user.getRoles().stream().map(Role::getRole).collect(Collectors.toList());
         List<Role> liRo = userService.listByRole(lsr);
         user.setRoles(liRo);
         userService.update(id, user);

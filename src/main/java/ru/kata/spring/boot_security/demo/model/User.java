@@ -108,6 +108,7 @@ public class User implements UserDetails {
     }
 
     public void setRoles(List<Role> roles) {
+        System.out.println("сработал setRoles");
         this.roles = roles;
     }
 

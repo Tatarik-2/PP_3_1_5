@@ -32,7 +32,7 @@ public class UserController {
 //        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 //        User user = (User) authentication.getPrincipal();
 //        model.addAttribute("user", user.getUser());
-        User user = userService.findByUsername(principal.getName());
+        User user = userService.findUserByUsername(principal.getName());
         System.out.println(user);
         model.addAttribute("user", user);
         return "adminUserPage";

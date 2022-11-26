@@ -6,7 +6,7 @@ import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
 
-public interface UserDAO {
+public interface UserDAO  {
 //    void createUsersTable();
 
 //    void dropUsersTable();
@@ -20,6 +20,8 @@ public interface UserDAO {
     void removeUserById(int id);
 
     List<User> getAllUsers();
+
+    User findUserByUsername(String username);
 
 //    void cleanUsersTable();
 }

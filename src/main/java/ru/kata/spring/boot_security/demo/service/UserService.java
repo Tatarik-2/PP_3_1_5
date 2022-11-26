@@ -20,9 +20,9 @@ public interface UserService {
 //
     void delete(int id);
 
-    public User findByUsername(String username);
+    public User findUserByUsername(String username);
 
-    public  User findByEmail(String email);
+//    public  User findByEmail(String email);
 
     List<Role> listRoles();
     List<Role> listByRole(List<String> name);

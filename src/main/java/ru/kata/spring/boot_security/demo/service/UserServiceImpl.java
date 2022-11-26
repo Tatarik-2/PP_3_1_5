@@ -1,37 +1,34 @@
 package ru.kata.spring.boot_security.demo.service;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.kata.spring.boot_security.demo.DAO.RoleDAO;
 import ru.kata.spring.boot_security.demo.DAO.UserDAO;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.model.repositories.UserRepository;
+
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private UserDAO userDAO;
-    private UserRepository userRepository;
+//    private UserRepository userRepository;
     private RoleDAO roleDAO;
 
-    public UserServiceImpl(UserDAO userDAO, UserRepository userRepository, RoleDAO roleDAO
+    public UserServiceImpl(UserDAO userDAO, RoleDAO roleDAO
     ) {
         this.userDAO = userDAO;
-        this.userRepository = userRepository;
+//        this.userRepository = userRepository;
         this.roleDAO = roleDAO;
     }
 
@@ -78,13 +75,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findByUsername(username);
+        User user = findUserByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("Пользователя с именем %s не существует", username));
         }
 //        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword()
 //                , mapRolesToAuthorities(user.getRoles()));
-//        Optional<User> user = userRepository.findByUsername(username);
+//        Optional<User> user = userRepository.findUserByUsername(username);
 //        if (user.isEmpty()){
 //            throw new UsernameNotFoundException(String.format("Пользователя с именем %s не существует", username));
 //        }
@@ -98,16 +95,17 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+//    @Transactional
+    public User findUserByUsername(String username) {
+        return userDAO.findUserByUsername(username);
     }
 
-    @Override
-    public User findByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
-    //    public Optional<User> findByUsername(String username){
-//        return userRepository.findByUsername(username);
+//    @Override
+//    public User findByEmail(String email) {
+//        return userRepository.findByEmail(email);
+//    }
+    //    public Optional<User> findUserByUsername(String username){
+//        return userRepository.findUserByUsername(username);
 //    }
 
 

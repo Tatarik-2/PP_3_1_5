@@ -165,7 +165,8 @@
                                                                                     size="2">
                                                                                 <option th:each="role : ${rolesList}"
                                                                                         th:text="${role.role}"
-                                                                                        th:value="${role.getId()}">
+                                                                                        th:value="${role.getId()}"
+                                                                                        th:field="*{roles}">
                                                                                 </option>
                                                                             </select>
                                                                         </div>
