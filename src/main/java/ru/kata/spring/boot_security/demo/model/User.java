@@ -17,21 +17,21 @@ import java.util.Set;
 public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
 
-    @Column
+    @Column(name = "name")
     private String name;
-    @Column
+    @Column(name = "email")
     private String email;
-    @Column
+    @Column(name = "age")
     private int age;
-    @Column
+    @Column(name = "username")
     private String username;
-    @Column
+    @Column(name = "password")
     private String password;
 
-//    @ManyToMany(cascade = CascadeType.ALL)
-    @ManyToMany(fetch = FetchType.LAZY/*, cascade = CascadeType.ALL*/)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles"
     , joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     , inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
@@ -39,12 +39,6 @@ public class User implements UserDetails {
 
     public void setToRole(Role role) {
         this.roles.add(role);
-    }
-
-    public User(String name, String email, int age) {
-        this.name = name;
-        this.email = email;
-        this.age = age;
     }
 
     public User() {
@@ -98,15 +92,6 @@ public class User implements UserDetails {
         return roles;
     }
 
-    public User(String name, String email, int age, String username, String password, List<Role> roles) {
-        this.name = name;
-        this.email = email;
-        this.age = age;
-        this.username = username;
-        this.password = password;
-        this.roles = roles;
-    }
-
     public void setRoles(List<Role> roles) {
         System.out.println("сработал setRoles");
         this.roles = roles;
@@ -140,7 +125,6 @@ public class User implements UserDetails {
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return getRoles();
-//        return null;
     }
 
     @Override

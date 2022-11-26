@@ -8,16 +8,12 @@ import java.util.Set;
 @Entity
 @Table(name = "roles")
 public class Role implements GrantedAuthority {
-    @Column
+    @Column(name = "id")
     @Id
     private Integer id;
-    @Column
+    @Column(name = "role")
     private String role;
 
-    //    @ManyToMany(cascade = CascadeType.ALL)
-//    @JoinTable(name = "user_roles"
-//            , joinColumns = @JoinColumn(name = "role_id")
-//            , inverseJoinColumns = @JoinColumn(name = "user_id"))
     @ManyToMany(mappedBy = "roles")
     private Set<User> users;
 

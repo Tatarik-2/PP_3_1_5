@@ -3,12 +3,13 @@ package ru.kata.spring.boot_security.demo.service;
 
 
 
+import org.springframework.security.core.userdetails.UserDetailsService;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
 import java.util.List;
 
-public interface UserService {
+public interface UserService extends UserDetailsService {
 
     List<User> getAllUsers();
 
@@ -20,12 +21,8 @@ public interface UserService {
 //
     void delete(int id);
 
-    public User findUserByUsername(String username);
-
-//    public  User findByEmail(String email);
+    User getUserByUsername(String username);
 
     List<Role> listRoles();
-    List<Role> listByRole(List<String> name);
-
 
 }

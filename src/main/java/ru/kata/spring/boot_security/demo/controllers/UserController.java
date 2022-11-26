@@ -29,10 +29,7 @@ public class UserController {
 
     @GetMapping("/info")
     public String showInfo(Model model, Principal principal) {
-//        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-//        User user = (User) authentication.getPrincipal();
-//        model.addAttribute("user", user.getUser());
-        User user = userService.findUserByUsername(principal.getName());
+        User user = userService.getUserByUsername(principal.getName());
         System.out.println(user);
         model.addAttribute("user", user);
         return "adminUserPage";

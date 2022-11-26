@@ -6,116 +6,115 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.kata.spring.boot_security.demo.DAO.RoleDAO;
-import ru.kata.spring.boot_security.demo.DAO.UserDAO;
+//import ru.kata.spring.boot_security.demo.DAO.RoleDAO;
+//import ru.kata.spring.boot_security.demo.DAO.UserDAO;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
+import ru.kata.spring.boot_security.demo.repositories.UserRepository;
 
 
+import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class UserServiceImpl implements UserService, UserDetailsService {
+public class UserServiceImpl implements UserService {
 
-    private UserDAO userDAO;
-//    private UserRepository userRepository;
-    private RoleDAO roleDAO;
 
-    public UserServiceImpl(UserDAO userDAO, RoleDAO roleDAO
+    private EntityManager entityManager;
+    private UserRepository userRepository;
+    private RoleRepository rolesRepository;
+
+
+
+    public UserServiceImpl(
+            UserRepository userRepository,
+            EntityManager entityManager,
+            RoleRepository roleRepository
     ) {
-        this.userDAO = userDAO;
-//        this.userRepository = userRepository;
-        this.roleDAO = roleDAO;
-    }
-
-//    //    @Autowired
-//    public UserServiceImpl(UserDAO userDAO) {
-//        this.userDAO = userDAO;
-//    }
-//
-//    @Autowired//пока решил так оставить, через аутоуайрд
-//    public void setUserRepository(UserRepository userRepository) {
-//        this.userRepository = userRepository;
-//    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<User> getAllUsers() {
-        return userDAO.getAllUsers();
+        this.userRepository = userRepository;
+        this.entityManager = entityManager;
+        this.rolesRepository = roleRepository;
     }
 
     @Override
     @Transactional
     public void createUser(User user) {
-        userDAO.saveUser(user);
-    }
+        String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
+        user.setPassword(encodedPassword);
+//        userRepository.save(user);
+        entityManager.persist(user);
 
-    @Override
-    @Transactional(readOnly = true)
-    public User get(int id) {
-        return userDAO.get(id);
-    }
-
-    @Override
-    @Transactional
-    public void update(int id, User updatedUser) {
-        userDAO.update(id, updatedUser);
     }
 
     @Override
     @Transactional
     public void delete(int id) {
-        userDAO.removeUserById(id);
+        userRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<User> getAllUsers() {
+        return userRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public void update(int id, User updatedUser) {
+        User userForUpdate = get(id);
+        userForUpdate.setUsername(updatedUser.getUsername());
+        userForUpdate.setName(updatedUser.getName());
+        userForUpdate.setEmail(updatedUser.getEmail());
+        userForUpdate.setAge(updatedUser.getAge());
+        userForUpdate.setRoles(updatedUser.getRoles());
+        if (updatedUser.getPassword().length() > 0) {
+            String encodedPassword = new BCryptPasswordEncoder().encode(updatedUser.getPassword());
+            userForUpdate.setPassword(encodedPassword);
+        }
+        userRepository.save(userForUpdate);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public User get(int id) {
+        Optional<User> userById = userRepository.findById(id);
+        if (userById.isPresent()) {
+            return userById.get();
+        } else {
+            throw new UsernameNotFoundException(String.format("User with %s not found", id));
+        }
+    }
+
+    @Override
+    @Transactional
+    public User getUserByUsername(String username) {
+        return userRepository.findUserByUsername(username);
     }
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = findUserByUsername(username);
+        User user = userRepository.findUserByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException(String.format("Пользователя с именем %s не существует", username));
         }
-//        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword()
-//                , mapRolesToAuthorities(user.getRoles()));
-//        Optional<User> user = userRepository.findUserByUsername(username);
-//        if (user.isEmpty()){
-//            throw new UsernameNotFoundException(String.format("Пользователя с именем %s не существует", username));
-//        }
-//        return user.get();
         return user;
     }
-
 
     private Collection<? extends GrantedAuthority> mapRolesToAuthorities(Collection<Role> roles) {
         return roles.stream().map(r -> new SimpleGrantedAuthority(r.getRole())).collect(Collectors.toList());
     }
 
     @Override
-//    @Transactional
-    public User findUserByUsername(String username) {
-        return userDAO.findUserByUsername(username);
-    }
-
-//    @Override
-//    public User findByEmail(String email) {
-//        return userRepository.findByEmail(email);
-//    }
-    //    public Optional<User> findUserByUsername(String username){
-//        return userRepository.findUserByUsername(username);
-//    }
-
-
-    @Override
     public List<Role> listRoles() {
-        return roleDAO.listRoles();
+        return rolesRepository.findAll();
     }
 
-    @Override
-    public List<Role> listByRole(List<String> name) {
-        return roleDAO.listByName(name);
-    }
 }
