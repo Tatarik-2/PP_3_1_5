@@ -4,20 +4,14 @@ package ru.kata.spring.boot_security.demo.service;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-//import ru.kata.spring.boot_security.demo.DAO.RoleDAO;
-//import ru.kata.spring.boot_security.demo.DAO.UserDAO;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.repositories.RoleRepository;
 import ru.kata.spring.boot_security.demo.repositories.UserRepository;
-
-
-import javax.persistence.EntityManager;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -26,8 +20,6 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-
-    private EntityManager entityManager;
     private UserRepository userRepository;
     private RoleRepository rolesRepository;
 
@@ -35,11 +27,9 @@ public class UserServiceImpl implements UserService {
 
     public UserServiceImpl(
             UserRepository userRepository,
-            EntityManager entityManager,
             RoleRepository roleRepository
     ) {
         this.userRepository = userRepository;
-        this.entityManager = entityManager;
         this.rolesRepository = roleRepository;
     }
 
@@ -48,9 +38,7 @@ public class UserServiceImpl implements UserService {
     public void createUser(User user) {
         String encodedPassword = new BCryptPasswordEncoder().encode(user.getPassword());
         user.setPassword(encodedPassword);
-//        userRepository.save(user);
-        entityManager.persist(user);
-
+        userRepository.save(user);
     }
 
     @Override
