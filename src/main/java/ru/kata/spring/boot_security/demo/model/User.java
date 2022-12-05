@@ -2,6 +2,8 @@ package ru.kata.spring.boot_security.demo.model;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.UniqueElements;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -40,7 +42,7 @@ public class User implements UserDetails {
     @JoinTable(name = "user_roles"
     , joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
     , inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
-    private List<Role> roles;
+    private Set<Role> roles;
 
     public void setToRole(Role role) {
         this.roles.add(role);
@@ -93,12 +95,11 @@ public class User implements UserDetails {
         this.password = password;
     }
 
-    public List<Role> getRoles() {
+    public Set<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<Role> roles) {
-        System.out.println("сработал setRoles");
+    public void setRoles(Set<Role> roles) {
         this.roles = roles;
     }
 

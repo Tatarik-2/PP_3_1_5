@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 
 @RestController
-//@RequestMapping("/api")
+@RequestMapping("/api")
 public class RESTController {
     private final UserService userService;
     private final UserValidator userValidator;
@@ -48,33 +48,32 @@ public class RESTController {
 //    }
 
     //Возвращаем список пользователей для заполнения форм страницы allusers
-    @GetMapping("/api/admin")
+    @GetMapping("/admin")
     public ResponseEntity<List<User>> getUserForAdminPage() {
         List<User> users = userService.getAllUsers();
-//        System.out.println(users);
         return new ResponseEntity<>(users, HttpStatus.OK);
     }
 
     //Возвращаем юзера для заполнения форм страницы
-    @GetMapping("/api/user")
+    @GetMapping("/user")
     public ResponseEntity<User> getUser(Principal principal) {
         return new ResponseEntity<>(userService.getUserByUsername(principal.getName()), HttpStatus.OK);
     }
 
     //Возвращаем спилок существующих ролей
-    @GetMapping("/api/roles")
+    @GetMapping("/roles")
     public ResponseEntity<List<Role>> getAllRoles() {
         return new ResponseEntity<>(userService.listRoles(), HttpStatus.OK);
     }
 
     //Получаем пользователя по id
-    @GetMapping("/api/admin/{id}")
+    @GetMapping("/admin/{id}")
     public User getUserById(@PathVariable Integer id) {
         return userService.get(id);
     }
     //создаем
 
-    @PostMapping(value = "/api/admin")
+    @PostMapping(value = "/admin")
     public ResponseEntity<User> addUserAction(@RequestBody User user, BindingResult bindingResult) {
         System.out.println(user);
         userValidator.validate(user, bindingResult);
@@ -85,18 +84,21 @@ public class RESTController {
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
-    //меняем
-    @PutMapping("/api/admin")
+    //меняем, предварительно проверив, не было ли такого юзера в базе. Так нужно для проверки валидатора))
+    @PutMapping("/admin")
     public ResponseEntity<User> updateUser(@RequestBody User user, BindingResult bindingResult) {
-        userValidator.validate(user, bindingResult);
-        if (bindingResult.hasErrors()){
-            return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);//Как вывести сообщение об ошибке?
+        if (!user.getUsername().equals(userService.get(user.getId()).getUsername())){
+            userValidator.validate(user, bindingResult);
+            if (bindingResult.hasErrors()){
+                return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);//Как вывести сообщение об ошибке?
+            }
         }
-        userService.update(user.getId(),user);
+
+        userService.update(user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
     //удаляем
-    @DeleteMapping("/api/admin/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<User> deleteUser(@PathVariable Integer id) {
         userService.delete(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
